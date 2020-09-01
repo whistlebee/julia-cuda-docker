@@ -19,6 +19,8 @@ ENV JULIA_GPG 3673DF529D9049477F76B37566E3C7DC03D6E495
 # https://julialang.org/downloads/
 ENV JULIA_VERSION 1.5.1
 
+RUN mkdir ~/.gnupg && echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf
+
 RUN set -eux; \
 	\
 	savedAptMark="$(apt-mark showmanual)"; \
@@ -67,3 +69,30 @@ RUN set -eux; \
 	\
 # smoke test
 	julia --version
+
+
+# Julia packages
+COPY install.jl /tmp/install.jl
+RUN julia /tmp/install.jl && rm /tmp/install.jl
+
+
+# conda
+ENV CONDA_HOME /opt/conda
+RUN cd /tmp && \
+    curl -s https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o /tmp/miniconda.sh && \
+    /bin/bash /tmp/miniconda.sh -f -b -p $CONDA_HOME && \
+    rm /tmp/miniconda.sh && \
+    $CONDA_HOME/bin/conda config --system --append channels conda-forge && \
+    $CONDA_HOME/bin/conda config --system --set auto_update_conda false && \
+    $CONDA_HOME/bin/conda config --system --set show_channel_urls true && \
+    $CONDA_HOME/bin/conda install --quiet --yes conda
+
+RUN $CONDA_HOME/bin/conda install -c conda-forge jupyterlab && \
+    $CONDA_HOME/bin/conda update --all --quiet --yes
+
+RUN echo ". ${CONDA_HOME}/etc/profile.d/conda.sh" >> ~/.bashrc && \
+    echo "conda activate" >> ~/.bashrc
+
+COPY run.sh /tmp/run.sh
+CMD ["/tmp/run.sh"]
+
