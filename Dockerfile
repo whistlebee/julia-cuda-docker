@@ -93,6 +93,7 @@ RUN $CONDA_HOME/bin/conda install -c conda-forge jupyterlab && \
 RUN echo ". ${CONDA_HOME}/etc/profile.d/conda.sh" >> ~/.bashrc && \
     echo "conda activate" >> ~/.bashrc
 
-COPY run.sh /tmp/run.sh
-CMD ["/tmp/run.sh"]
+COPY run.sh
+RUN chmod +x run.sh
+CMD ["./run.sh"]
 
