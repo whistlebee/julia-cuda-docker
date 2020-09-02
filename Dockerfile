@@ -87,7 +87,7 @@ RUN $CONDA_HOME/bin/conda install -c conda-forge jupyterlab && \
 RUN echo ". ${CONDA_HOME}/etc/profile.d/conda.sh" >> ~/.bashrc && \
     echo "conda activate" >> ~/.bashrc
 
-RUN export PATH=$PATH:$CONDA_HOME/bin
+ENV PATH $PATH:$CONDA_HOME/bin
 
 # Julia packages
 COPY install.jl /tmp/install.jl
