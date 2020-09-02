@@ -1,3 +1,4 @@
 #!/bin/bash
 
-jupyter lab --ip=0.0.0.0 --no-browser --allow-root]
+$CONDA_HOME/bin/jupyter lab --ip=0.0.0.0 --no-browser --allow-root]
+

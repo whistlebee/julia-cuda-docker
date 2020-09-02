@@ -70,12 +70,6 @@ RUN set -eux; \
 # smoke test
 	julia --version
 
-
-# Julia packages
-COPY install.jl /tmp/install.jl
-RUN julia /tmp/install.jl && rm /tmp/install.jl
-
-
 # conda
 ENV CONDA_HOME /opt/conda
 RUN cd /tmp && \
@@ -92,6 +86,10 @@ RUN $CONDA_HOME/bin/conda install -c conda-forge jupyterlab && \
 
 RUN echo ". ${CONDA_HOME}/etc/profile.d/conda.sh" >> ~/.bashrc && \
     echo "conda activate" >> ~/.bashrc
+
+# Julia packages
+COPY install.jl /tmp/install.jl
+RUN julia /tmp/install.jl && rm /tmp/install.jl
 
 COPY run.sh .
 RUN chmod +x run.sh
